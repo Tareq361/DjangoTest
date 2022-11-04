@@ -7,6 +7,9 @@ class Variant(TimeStampMixin):
     title = models.CharField(max_length=40, unique=True)
     description = models.TextField()
     active = models.BooleanField(default=True)
+    def get_variant(self):
+
+        return ProductVariant.objects.filter(variant=self.id).order_by('variant_title').values('variant_title').distinct()
 
 
 class Product(TimeStampMixin):
@@ -17,6 +20,10 @@ class Product(TimeStampMixin):
         Pvariant=ProductVariantPrice.objects.filter(product=self.id)
 
         return Pvariant
+    def get_product_variant_filter(price_to,price_from):
+
+        return ProductVariantPrice.objects.filter(price__range=(price_from,price_to))
+
 
 
 class ProductImage(TimeStampMixin):

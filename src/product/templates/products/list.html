@@ -10,16 +10,23 @@
 
 
 <div class="card">
-    <form action="" method="get" class="card-header">
+    <form action="?" method="get" class="card-header">
         <div class="form-row justify-content-between">
             <div class="col-md-2">
-                <input type="text" name="title" placeholder="Product Title" class="form-control">
+                <input type="text" name="title__icontains" placeholder="Product Title" class="form-control">
             </div>
             <div class="col-md-2">
-                <select name="variant" id="" class="form-control">
-                    <option selected disabled>--Select A Variant--</option>
 
+                <select name="variant" id="" class="form-control" placeholder="variant">
+         {%for v in variants %}
+ <option disabled> <strong>  {{v.title}}</strong></option>
+                    {%for vv in v.get_variant%}
+
+                   <option> {{vv.variant_title}}</option>
+                    {%endfor%}
+{%endfor%}
                 </select>
+
             </div>
 
             <div class="col-md-3">
@@ -27,9 +34,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Price Range</span>
                     </div>
-                    <input type="text" name="price_from" aria-label="First name" placeholder="From"
+                    <input type="number" name="price_from" aria-label="First name" placeholder="From"
                            class="form-control">
-                    <input type="text" name="price_to" aria-label="Last name" placeholder="To" class="form-control">
+                    <input type="number" name="price_to" aria-label="Last name" placeholder="To" class="form-control">
                 </div>
             </div>
             <div class="col-md-2">
@@ -61,7 +68,7 @@
                     <td>{{product.title}} <br> Created at : {{product.created_at|timesince }} ago</td>
                     <td>{{product.description}}</td>
                     <td>
-                        <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
+                        <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant{{product.id}}">
                             {% for pvp in product.get_product_variant %}
                                 <dt class="col-sm-3 pb-0">
                                     {{pvp.product_variant_one.variant_title}}/{{pvp.product_variant_two.variant_title}}/{{pvp.product_variant_three.variant_title}}
@@ -75,7 +82,7 @@
 
                             {%endfor%}
                             </dl>
-                        <button onclick="$('#variant').toggleClass('h-auto')" class="btn btn-sm btn-link">Show more
+                        <button onclick="$('#variant{{product.id}}').toggleClass('h-auto')" class="btn btn-sm btn-link">Show more
                         </button>
                     </td>
                     <td>
