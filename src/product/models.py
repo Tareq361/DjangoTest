@@ -13,6 +13,10 @@ class Product(TimeStampMixin):
     title = models.CharField(max_length=255)
     sku = models.SlugField(max_length=255, unique=True)
     description = models.TextField()
+    def get_product_variant(self):
+        Pvariant=ProductVariantPrice.objects.filter(product=self.id)
+
+        return Pvariant
 
 
 class ProductImage(TimeStampMixin):
