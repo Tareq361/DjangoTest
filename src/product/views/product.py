@@ -1,9 +1,15 @@
 from django.db.models import Subquery
+from django.http import HttpResponse
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 
 from datetime import datetime, timedelta
 
+from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.utils import json
 
 from product.models import Variant, Product, ProductVariantPrice, ProductVariant
 
@@ -17,7 +23,7 @@ class BaseProductView(generic.View):
 
 class ProductView(BaseProductView, ListView):
     template_name = 'products/list.html'
-    paginate_by = 5
+    paginate_by = 2
 
     def get_queryset(self):
         filter_string = {}
@@ -62,3 +68,26 @@ class CreateProductView(generic.TemplateView):
         context['product'] = True
         context['variants'] = list(variants.all())
         return context
+#for api using rest framework
+
+
+@api_view(['GET'])
+def apiView(request):
+    api_urls = {
+        'CreateProduct': 'api/createproduct/',
+
+    }
+    return Response(api_urls)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def createProduct(request):
+    if request.method =='POST':
+        if Product.create_product(request.data):
+            js = {"msg": "create successfully"}
+
+        else:
+            js = {"msg": "create unsuccessfully"}
+        json_data = JSONRenderer().render(js)
+        return HttpResponse(json_data, content_type='application/json')

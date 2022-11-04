@@ -24,7 +24,31 @@ class Product(TimeStampMixin):
 
         return ProductVariantPrice.objects.filter(price__range=(price_from,price_to))
 
-
+    def create_product(data):
+        new_product=Product.objects.create(title=data['title'],sku=data['sku'],description=data['description'])
+        for op in data['product_variant']:
+            new_variant=Variant.objects.get(id=op['option']);
+            for tag in op['tags']:
+                new_product_variant=ProductVariant.objects.create(variant_title=tag,variant=new_variant,product=new_product)
+        for p_v_p in data['product_variant_prices']:
+            v = p_v_p['title'].split('/')
+            print(v[0])
+            try:
+                product_variant_one=ProductVariant.objects.get(variant_title=v[0],product=new_product)
+            except :
+                product_variant_one=None
+            try:
+                product_variant_two = ProductVariant.objects.get(variant_title=v[1], product=new_product)
+            except :
+                product_variant_two = None
+            try:
+                product_variant_three = ProductVariant.objects.get(variant_title=v[2], product=new_product)
+            except :
+                product_variant_three = None
+            new_product_variant_price=ProductVariantPrice.objects.create(product_variant_one=product_variant_one,
+                                                   product_variant_two=product_variant_two,
+                                                   product_variant_three=product_variant_three,price=p_v_p['price'],stock=p_v_p['stock'],product=new_product)
+        return True
 
 class ProductImage(TimeStampMixin):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

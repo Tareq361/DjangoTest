@@ -101,7 +101,9 @@ import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 import InputTag from 'vue-input-tag'
 import axios from 'axios'
-
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.withCredentials = true;
 export default {
   components: {
     vueDropzone: vue2Dropzone,
@@ -190,8 +192,9 @@ export default {
       }
 
 
-      axios.post('/product', product).then(response => {
+      axios.post('api/',product).then(response => {
         console.log(response.data);
+        alert ("Product created successfully");
       }).catch(error => {
         console.log(error);
       })
